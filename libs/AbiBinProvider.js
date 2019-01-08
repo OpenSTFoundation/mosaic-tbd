@@ -10,9 +10,37 @@ const Linker = require('../libs/utils/linker');
 class AbiBinProvider {
   constructor(abiFolderPath, binFolderPath) {
     const oThis = this;
-    oThis.abiFolderPath = abiFolderPath || '../contracts/abi/';
-    oThis.binFolderPath = binFolderPath || '../contracts/bin/';
+    oThis.abiFolderPaths = [];
+    oThis.binFolderPaths = [];
+    abiFolderPath = abiFolderPath || '../contracts/abi/';
+    binFolderPath = binFolderPath || '../contracts/bin/';
+    oThis.addAbiFolderPaths(abiFolderPath);
+    oThis.addBinFolderPaths(binFolderPath);
     oThis.custom = oThis.custom || null;
+  }
+
+  addAbiFolderPaths(abiFolderPath) {
+    const oThis = this;
+    if (abiFolderPath && oThis.abiFolderPaths.indexOf(abiFolderPath) < 0) {
+      oThis.abiFolderPaths.push(abiFolderPath);
+    }
+  }
+
+  getAbiFolderPaths() {
+    const oThis = this;
+    return oThis.abiFolderPaths;
+  }
+
+  addBinFolderPaths(binFolderPath) {
+    const oThis = this;
+    if (binFolderPath && oThis.binFolderPaths.indexOf(binFolderPath) < 0) {
+      oThis.binFolderPaths.push(binFolderPath);
+    }
+  }
+
+  getBinFolderPaths() {
+    const oThis = this;
+    return oThis.binFolderPaths;
   }
 
   addABI(contractName, abiFileContent) {
@@ -68,9 +96,18 @@ class AbiBinProvider {
     }
 
     //__NOT_FOR_WEB__BEGIN__
-    let fPath = path.resolve(__dirname, oThis.abiFolderPath, contractName + '.abi');
-    let abiFileContent = fs.readFileSync(fPath, 'utf8');
-    let abi = JSON.parse(abiFileContent);
+    let len = oThis.abiFolderPaths.length,
+      cnt;
+    let currentPath, fPath, abiFileContent, abi;
+    for (cnt = 0; cnt < len; cnt++) {
+      currentPath = oThis.abiFolderPaths[cnt];
+      fPath = path.resolve(__dirname, currentPath, contractName + '.abi');
+      if (fs.existsSync(fPath)) {
+        abiFileContent = fs.readFileSync(fPath, 'utf8');
+        abi = JSON.parse(abiFileContent);
+        break;
+      }
+    }
     //__NOT_FOR_WEB__END__
     return abi;
   }
@@ -83,8 +120,17 @@ class AbiBinProvider {
     }
 
     //__NOT_FOR_WEB__BEGIN__
-    let fPath = path.resolve(__dirname, oThis.binFolderPath, contractName + '.bin');
-    let bin = fs.readFileSync(fPath, 'utf8');
+    let len = oThis.binFolderPaths.length,
+      cnt;
+    let currentPath, fPath, bin;
+    for (cnt = 0; cnt < len; cnt++) {
+      currentPath = oThis.binFolderPaths[cnt];
+      fPath = path.resolve(__dirname, currentPath, contractName + '.bin');
+      if (fs.existsSync(fPath)) {
+        bin = fs.readFileSync(fPath, 'utf8');
+        break;
+      }
+    }
     if (typeof bin === 'string' && bin.indexOf('0x') != 0) {
       bin = '0x' + bin;
     }
