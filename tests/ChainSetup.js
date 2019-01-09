@@ -6,8 +6,8 @@ const chai = require('chai'),
   ChainSetup = require('../libs/ChainSetup'),
   assert = chai.assert;
 
-const config = require('../test/utils/configReader'),
-  Web3WalletHelper = require('../test/utils/Web3WalletHelper');
+const config = require('../tests/utils/configReader'),
+  Web3WalletHelper = require('../tests/utils/Web3WalletHelper');
 
 const web3 = new Web3(config.gethRpcEndPoint);
 let web3WalletHelper = new Web3WalletHelper(web3);
@@ -67,12 +67,6 @@ let auxiliaryConfig = {
   libs: {
     deployer: config.deployerAddress
   },
-  cogatewayOrganization: {
-    deployer: config.deployerAddress,
-    owner: config.organizationOwner,
-    admin: config.organizationAdmin,
-    workers: [config.organizationWorker]
-  },
   cogateway: {
     deployer: config.deployerAddress,
     bounty: '100'
@@ -80,7 +74,7 @@ let auxiliaryConfig = {
 };
 
 //To-Do: Write Test Case here.
-describe('test/ChainSetup', function() {
+describe('tests/ChainSetup', function() {
   before(function() {
     this.timeout(3 * 60000);
     //This hook could take long time.
