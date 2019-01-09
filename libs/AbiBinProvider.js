@@ -12,8 +12,8 @@ class AbiBinProvider {
     const oThis = this;
     oThis.abiFolderPaths = [];
     oThis.binFolderPaths = [];
-    abiFolderPath = abiFolderPath || '../contracts/abi/';
-    binFolderPath = binFolderPath || '../contracts/bin/';
+    abiFolderPath = abiFolderPath || path.resolve(__dirname, '../contracts/abi/');
+    binFolderPath = binFolderPath || path.resolve(__dirname, '../contracts/bin/');
     oThis.addAbiFolderPaths(abiFolderPath);
     oThis.addBinFolderPaths(binFolderPath);
     oThis.custom = oThis.custom || null;
@@ -101,7 +101,7 @@ class AbiBinProvider {
     let currentPath, fPath, abiFileContent, abi;
     for (cnt = 0; cnt < len; cnt++) {
       currentPath = oThis.abiFolderPaths[cnt];
-      fPath = path.resolve(__dirname, currentPath, contractName + '.abi');
+      fPath = path.resolve(currentPath, contractName + '.abi');
       if (fs.existsSync(fPath)) {
         abiFileContent = fs.readFileSync(fPath, 'utf8');
         abi = JSON.parse(abiFileContent);
@@ -125,7 +125,7 @@ class AbiBinProvider {
     let currentPath, fPath, bin;
     for (cnt = 0; cnt < len; cnt++) {
       currentPath = oThis.binFolderPaths[cnt];
-      fPath = path.resolve(__dirname, currentPath, contractName + '.bin');
+      fPath = path.resolve(currentPath, contractName + '.bin');
       if (fs.existsSync(fPath)) {
         bin = fs.readFileSync(fPath, 'utf8');
         break;
